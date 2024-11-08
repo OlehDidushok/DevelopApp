@@ -10,9 +10,14 @@ import SwiftUI
 struct CardView: View {
     var card: Card
     
+    @State private var fadeIn: Bool = false
+    @State private var moveDownward: Bool = false
+    @State private var moveUpward: Bool = false
+    
     var body: some View {
         ZStack {
             Image(card.imageName)
+                .opacity(fadeIn ? 1.0 : 0.0)
             
             VStack {
                 Text(card.title)
@@ -26,7 +31,7 @@ struct CardView: View {
                     .italic()
             }
             .offset(
-                y: -218
+                y: moveDownward ? -218 : -300
             )
             Button(action: {
                 playSound(sound: "sound-chime", type: "mp3")
@@ -50,7 +55,7 @@ struct CardView: View {
                 .shadow(color: Color("ColorShadow"), radius: 6, x: 0, y: 3)
             }
             .offset(
-                y: 210
+                y: moveUpward ? 210 : 300
             )
         }
         .frame(width: 335, height: 545)
@@ -58,6 +63,15 @@ struct CardView: View {
         )
         .cornerRadius(16)
         .shadow(radius: 8)
+        .onAppear() {
+            withAnimation(.linear(duration: 1.2)) {
+                self.fadeIn.toggle()
+            }
+            withAnimation(.linear(duration: 0.8)) {
+                self.moveDownward.toggle()
+                self.moveUpward.toggle()
+            }
+        }
     }
 }
 
